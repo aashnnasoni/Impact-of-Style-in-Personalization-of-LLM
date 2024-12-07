@@ -76,7 +76,7 @@ def encode(model, tokenizer, text):
         outputs = model(**inputs)
     return outputs.pooler_output[0].numpy()
 
-def create_index_in_batches(df, encoder, tokenizer, batch_size=100):
+def index_in_batches(df, encoder, tokenizer, batch_size=100):
 
     index = None
     for start in range(0, len(df), batch_size):
@@ -126,7 +126,7 @@ def process_data_in_batches(
 
             df_profile = pd.DataFrame(user_profile)
 
-            index = create_index_in_batches(df_profile, encoder, tokenizer, batch_size)
+            index = index_in_batches(df_profile, encoder, tokenizer, batch_size)
 
             dense_vector = np.mean(
                 [encode(encoder, tokenizer, t) for t in [given_line] + response], axis=0
@@ -247,7 +247,6 @@ with open(file_path, 'r') as f:
     data = json.load(f)
 
 def safe_literal_eval(value):
-    """ Safely convert string to list or dictionary """
     try:
         return ast.literal_eval(value)
     except (ValueError, SyntaxError):
